@@ -8,6 +8,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const PORT = process.env.PORT || 5001;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
 // Set up PostgreSQL connection pool
 const pool = new Pool({
   host: process.env.DB_HOST,
