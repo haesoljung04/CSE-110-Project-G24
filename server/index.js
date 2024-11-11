@@ -74,3 +74,4 @@ app.post('/api/actions', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
+module.exports = app;  // Make sure to export the app for testing
