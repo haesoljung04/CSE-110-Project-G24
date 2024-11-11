@@ -6,14 +6,13 @@ function App() {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    fetch('/api')
+    fetch('http://localhost:5001/api') // Use full backend URL
       .then((response) => response.json())
       .then((data) => setMessage(data.message))
       .catch((error) => console.error('Error:', error));
-
-    // Send user info to the backend to store or update the user profile
+  
     if (isAuthenticated && user) {
-      fetch('/api/users', {
+      fetch('http://localhost:5001/api/users', { // Full URL for POST request
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -24,7 +23,7 @@ function App() {
       }).catch((error) => console.error('Error:', error));
     }
   }, [isAuthenticated, user]);
-
+  
   return (
     <div>
       <h1>Message from Backend:</h1>
