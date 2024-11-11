@@ -1,17 +1,61 @@
-name: Unit Tests # name of the test
+name: Run Tests
 
 on:
- push:
-   branches: [ StarterCodeDrafts ]  # or 'master' if that's your primary branch name
- pull_request:
-   branches: [ StarterCodeDrafts ] # the Github Action will activate "on" the event that you "push" to the repo
+  push:
+    branches:
+      - main
+      - feature/*
+  pull_request:
+    branches:
+      - main
 
-jobs: # the things being executed
- tests: # the name of your status check, will become important when you do branch protection
-   runs-on: ubuntu-latest # which device on Github's server that you are running the Actions on
-   steps:
-     - uses: actions/checkout@v4 # using version 4 of Actions
-     - name: Install Dependencies
-       run: npm install
-     - name: Unit Test
-       run: npm test # the actual testing line
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test_db
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping --silent"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 3
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+    - name: Install Client Dependencies
+      working-directory: ./client
+      run: npm install
+
+    - name: Run Client Tests
+      working-directory: ./client
+      run: npm test -- --watchAll=false
+
+    - name: Install Server Dependencies
+      working-directory: ./server
+      run: npm install
+
+    - name: Set up environment variables
+      run: echo "DB_HOST=localhost\nDB_USER=root\nDB_PASSWORD=root\nDB_NAME=test_db" > server/.env
+
+    - name: Run Server Tests
+      working-directory: ./server
+      env:
+        DB_HOST: 127.0.0.1
+        DB_USER: root
+        DB_PASSWORD: root
+        DB_NAME: test_db
+      run: npm test
