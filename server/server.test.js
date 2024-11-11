@@ -9,4 +9,4 @@ describe('GET /api', () => {
   });
 });
 
-// check to see if github workflows is working using sanity checl
+// check to see if github workflows is working using sanity check pls
