@@ -10,8 +10,13 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-// Enable CORS for all origins (or configure it specifically)
-app.use(cors());
+
+// Enable CORS for all origins (or specify allowed origins)
+app.use(cors({
+  origin: 'http://localhost:3000', // Allow requests from the React app's origin
+  methods: ['GET', 'POST', 'DELETE', 'PUT'],         // Specify allowed HTTP methods
+  credentials: true                 // Allow cookies or credentials if needed
+}));
 
 // Middleware to handle JSON requests
 app.use(express.json());
