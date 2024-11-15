@@ -18,7 +18,7 @@ jobs:
         image: mysql:latest
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: test_db
+          MYSQL_DATABASE: workout_app
         ports:
           - 3306:3306
         options: >-
@@ -49,7 +49,7 @@ jobs:
       run: npm install
 
     - name: Set up environment variables
-      run: echo "DB_HOST=localhost\nDB_USER=root\nDB_PASSWORD=root\nDB_NAME=test_db" > server/.env
+      run: echo "DB_HOST=localhost\nDB_USER=root\nDB_PASSWORD=root\nDB_NAME=workout_app" > server/.env
 
     - name: Run Server Tests
       working-directory: ./server
@@ -57,5 +57,5 @@ jobs:
         DB_HOST: 127.0.0.1
         DB_USER: root
         DB_PASSWORD: root
-        DB_NAME: test_db
+        DB_NAME: workout_app
       run: npm test
