@@ -75,4 +75,4 @@ const server = app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
 // Export both the app and the database connection
-module.exports = { app, db, server };
+module.exports = { server, db };
