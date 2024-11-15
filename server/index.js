@@ -70,8 +70,9 @@ app.post('/api/actions', (req, res) => {
   });
 });
 
-// Start the server
-app.listen(PORT, () => {
+// Start the server and export the server instance
+const server = app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
-module.exports = app;  // Make sure to export the app for testing
+// Export both the app and the database connection
+module.exports = { app, db, server };
