@@ -49,12 +49,19 @@ jobs:
       run: npm install
 
     - name: Set up environment variables
-      run: echo "DB_HOST=localhost\nDB_USER=root\nDB_PASSWORD=root\nDB_NAME=workout_app" > server/.env
+      run: echo "DB_HOST=mysql\nDB_USER=root\nDB_PASSWORD=root\nDB_NAME=workout_app" > server/.env
+
+    - name: Wait for MySQL to be ready
+      run: |
+        until mysql -h mysql -u root -proot -e "SELECT 1" &>/dev/null; do
+          echo "Waiting for MySQL to be ready..."
+          sleep 5
+        done
 
     - name: Run Server Tests
       working-directory: ./server
       env:
-        DB_HOST: 127.0.0.1
+        DB_HOST: mysql
         DB_USER: root
         DB_PASSWORD: root
         DB_NAME: workout_app
