@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import { SignInPage } from './pages/SignInPage';
 
 function App() {
   const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
@@ -26,11 +27,8 @@ function App() {
   
   return (
     <div>
-      <h1>Message from Backend:</h1>
-      <p>{message}</p>
-
       {!isAuthenticated ? (
-        <button onClick={() => loginWithRedirect()}>Log In</button>
+        <SignInPage /> 
       ) : (
         <>
           <button onClick={() => logout({ returnTo: window.location.origin })}>Log Out</button>
