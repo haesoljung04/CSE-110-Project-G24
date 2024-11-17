@@ -1,16 +1,35 @@
 import React, { useState } from 'react';
 import './AddFriend.css';
+import axios from 'axios';
+
 
 const AddFriend = () => {
   const [email, setEmail] = useState('');
+  const [statusMessage, setStatusMessage] = useState(''); 
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
   };
 
-  const handleSendRequest = () => {
-    // Placeholder function - you can add functionality here later if needed
-    console.log(`Friend request sent to: ${email}`);
+  const handleSendRequest = async () => {
+    try {
+      // Replace with your actual Auth0 user ID if available
+      const requesterId = 'auth0-user-id-placeholder'; 
+
+      // Send the request to the backend
+      const response = await axios.post('http://localhost:5001/api/send-friend-request', {
+        requesterId, // The ID of the logged-in user
+        recipientEmail: email, // Email entered by the user
+      });
+
+      // Display success message
+      setStatusMessage(response.data.message || 'Friend request sent!');
+    } catch (error) {
+      // Handle errors and display the error message
+      const errorMessage =
+        error.response?.data?.message || 'An error occurred while sending the friend request.';
+      setStatusMessage(errorMessage);
+    }
   };
 
   return (
@@ -28,6 +47,7 @@ const AddFriend = () => {
       <button onClick={handleSendRequest} className="add-friend-button">
         Send Friend Request
       </button>
+      {statusMessage && <p className="add-friend-status">{statusMessage}</p>}
     </div>
   );
 };
