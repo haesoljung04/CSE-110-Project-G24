@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import WorkoutPage from './pages/WorkoutPage'; 
 
 function App() {
   const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
@@ -28,6 +29,7 @@ function App() {
     <div>
       <h1>Message from Backend:</h1>
       <p>{message}</p>
+      <WorkoutPage />
 
       {!isAuthenticated ? (
         <button onClick={() => loginWithRedirect()}>Log In</button>
