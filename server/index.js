@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql2');
 const dotenv = require('dotenv');
+const friendAllRoutes = require('./routes/friendAllRoutes');
 
 // Initialize dotenv to access environment variables
 dotenv.config();
@@ -38,6 +39,7 @@ db.connect((err) => {
   console.log('Connected to MySQL!');
 });
 
+app.use('/api/friends', friendAllRoutes);
 // Example route
 app.get('/api', (req, res) => {
   res.json({ message: 'Hello from the backend!' });
