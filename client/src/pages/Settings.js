@@ -25,25 +25,25 @@ export const Settings = () => {
             <h1 className="settings-title">Settings</h1>
             
             <div className="center-buttons">
-            <button className="edit-profile-image">Edit</button>
-            <button className="edit-profile">Edit Profile</button>
+                <button className="edit-profile-image">Edit</button>
+                <button className="edit-profile">Edit Profile</button>
             </div>
 
             <div className="ghost-mode">
-    <label>Ghost mode</label>
-    <label className="slider">
-        <input type="checkbox" />
-        <span className="slider-container"></span>
-    </label>
-</div>
+                <label>Ghost mode</label>
+                <label className="slider">
+                    <input type="checkbox" />
+                    <span className="slider-container"></span>
+                </label>
+            </div>
 
-<div className="light-dark-mode">
-    <label>Light/Dark mode</label>
-    <label className="slider">
-        <input type="checkbox" />
-        <span className="slider-container"></span>
-    </label>
-</div>
+            <div className="light-dark-mode">
+                <label>Light/Dark mode</label>
+                <label className="slider">
+                    <input type="checkbox" />
+                    <span className="slider-container"></span>
+                </label>
+            </div>
 
             <p onClick={() => logout({ returnTo: window.location.origin })}>Log Out</p>
 
