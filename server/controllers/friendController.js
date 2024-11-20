@@ -1,33 +1,65 @@
 const User = require('../models/User');
 const FriendRequest = require('../models/FriendRequest');
 
-// Search for a user by email
-exports.searchUserByEmail = async (req, res) => {
-  const { email } = req.body;
+// Send a friend request
+exports.sendFriendRequest = async (req, res) => {
   try {
-    const user = await User.findOne({ email });
-    if (user) {
-      res.status(200).json({ userId: user._id, name: user.name });
-    } else {
-      res.status(404).json({ message: 'User not found' });
-    }
+    const { requesterId, recipientEmail } = req.body;
+
+    // Find or create the recipient user by email
+    const [recipient] = await User.findOrCreate({ where: { email: recipientEmail } });
+
+    // Create a new friend request
+    const friendRequest = await FriendRequest.create({
+      requesterId,
+      recipientId: recipient.id,
+    });
+
+    res.status(201).json({ message: 'Friend request sent!', friendRequest });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error });
+    console.error(error);
+    res.status(500).json({ message: 'Error sending friend request', error });
   }
 };
 
-// Send a friend request
-exports.sendFriendRequest = async (req, res) => {
-  const { requesterId, recipientId } = req.body;
+// Get all friend requests for a specific user
+exports.getFriendRequests = async (req, res) => {
   try {
-    const existingRequest = await FriendRequest.findOne({ requesterId, recipientId });
-    if (existingRequest) {
-      return res.status(400).json({ message: 'Friend request already sent' });
-    }
-    const friendRequest = new FriendRequest({ requesterId, recipientId });
-    await friendRequest.save();
-    res.status(201).json({ message: 'Friend request sent' });
+    const { userId } = req.params;
+
+    // Find all friend requests where the recipient is the user
+    const requests = await FriendRequest.findAll({
+      where: { recipientId: userId },
+      include: [
+        {
+          model: User,
+          as: 'Requester',
+          attributes: ['id', 'email'], // Include only specific fields from the requester
+        },
+      ],
+    });
+
+    res.status(200).json(requests);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error });
+    console.error(error);
+    res.status(500).json({ message: 'Error retrieving friend requests', error });
+  }
+};
+
+// Accept a friend request
+exports.acceptFriendRequest = async (req, res) => {
+  try {
+    const { requestId } = req.body;
+
+    // Update the status of the friend request to 'accepted'
+    const friendRequest = await FriendRequest.update(
+      { status: 'accepted' },
+      { where: { id: requestId } }
+    );
+
+    res.status(200).json({ message: 'Friend request accepted!' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error accepting friend request', error });
   }
 };
