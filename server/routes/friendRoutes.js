@@ -1,15 +1,11 @@
 const express = require('express');
 const friendController = require('../controllers/friendController');
+const authMiddleware = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-// Endpoint to send a friend request
-router.post('/send-friend-request', friendController.sendFriendRequest);
-
-// Endpoint to get friend requests for a user
-router.get('/friend-requests/:userId', friendController.getFriendRequests);
-
-// Endpoint to accept a friend request
-router.post('/accept-friend-request', friendController.acceptFriendRequest);
+router.post('/send-friend-request', authMiddleware, friendController.sendFriendRequest);
+router.get('/friend-requests/:userId', authMiddleware, friendController.getFriendRequests);
+router.post('/accept-friend-request', authMiddleware, friendController.acceptFriendRequest);
 
 module.exports = router;
