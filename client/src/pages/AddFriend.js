@@ -14,7 +14,7 @@ const AddFriend = () => {
   const handleSendRequest = async () => {
     try {
       // Replace with your actual Auth0 user ID if available
-      const requesterId = 'auth0-user-id-placeholder'; 
+      const requesterId = "auth0-id-from-context-or-token"; 
 
       // Send the request to the backend
       const response = await axios.post('http://localhost:5001/api/send-friend-request', {
