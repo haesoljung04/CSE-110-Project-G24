@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import ProfilePage from './pages/ProfilePage';
+
 
 function App() {
   const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
@@ -25,19 +28,36 @@ function App() {
   }, [isAuthenticated, user]);
   
   return (
-    <div>
-      <h1>Message from Backend:</h1>
-      <p>{message}</p>
+    <Router>
+      <Routes>
+        {/* Default route: Main page with the message and login/logout functionality */}
+        <Route
+          path="/"
+          element={
+            <div>
+              <h1>Message from Backend:</h1>
+              <p>{message}</p>
 
-      {!isAuthenticated ? (
-        <button onClick={() => loginWithRedirect()}>Log In</button>
-      ) : (
-        <>
-          <button onClick={() => logout({ returnTo: window.location.origin })}>Log Out</button>
-          <h2>Welcome, {user.name}</h2>
-        </>
-      )}
-    </div>
+              {!isAuthenticated ? (
+                <button onClick={() => loginWithRedirect()}>Log In</button>
+              ) : (
+                <>
+                  <button
+                    onClick={() => logout({ returnTo: window.location.origin })}
+                  >
+                    Log Out
+                  </button>
+                  <h2>Welcome, {user.name}</h2>
+                </>
+              )}
+            </div>
+          }
+        />
+
+        {/* Profile Page Route */}
+        <Route path="/profilepage" element={<ProfilePage />} />
+      </Routes>
+    </Router>
   );
 }
 
