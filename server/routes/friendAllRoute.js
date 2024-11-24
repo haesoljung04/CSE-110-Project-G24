@@ -1,8 +1,10 @@
 const express = require('express');
-const friendAllController = require('../controllers/friendAllController');
-
 const router = express.Router();
+const friendAllController = require('../controllers/friendAllController'); // Adjust path if needed
 
-router.get('/', friendAllController.getFriends);
-
-module.exports = router;
+module.exports = (db) => {
+  // Route to fetch all friends
+  router.get('/', (req, res) => friendAllController.getFriends(req, res, db));
+  
+  return router;
+};

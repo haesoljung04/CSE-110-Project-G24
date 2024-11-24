@@ -1,7 +1,6 @@
-const db = require('../db');
+exports.getFriends = (req, res, db) => {
+  const query = 'SELECT id, name FROM friends'; 
 
-exports.getFriends = (req, res) => {
-  const query = 'SELECT id, name FROM friends';
   db.query(query, (err, results) => {
     if (err) {
       console.error('Error fetching friends:', err);
