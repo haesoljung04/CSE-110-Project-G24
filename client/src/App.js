@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import FriendsList from './pages/FriendsList'; 
 
 function App() {
   const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:5001/api') // Use full backend URL
+    fetch('http://localhost:5001/api')
       .then((response) => response.json())
       .then((data) => setMessage(data.message))
       .catch((error) => console.error('Error:', error));

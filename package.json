@@ -2,5 +2,6 @@
   "dependencies": {
     "dotenv": "^16.4.5",
     "mysql2": "^3.11.4"
+    "react-scripts": "^5.0.1"
   }
 }
