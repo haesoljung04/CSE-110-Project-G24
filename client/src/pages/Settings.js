@@ -6,6 +6,29 @@ export const Settings = () => {
     const { logout } = useAuth0();
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
+    const { getAccessTokenSilently, user } = useAuth0();
+
+    const handleResetPassword = async () => {
+        const token = await getAccessTokenSilently();
+        try {
+            await fetch(`https://${process.env.REACT_APP_AUTH0_DOMAIN}/dbconnections/change_password`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    client_id: process.env.REACT_APP_AUTH0_CLIENT_ID,
+                    email: user.email, // Replace with the logged-in user's email
+                    connection: 'Username-Password-Authentication', // Default database connection
+                }),
+            });
+            alert('Password reset email sent!');
+        } catch (error) {
+            console.error('Error sending reset password email:', error);
+        }
+    };
+
     const handleDeleteClick = () => {
         setShowDeleteModal(true);
     };
@@ -47,7 +70,7 @@ export const Settings = () => {
 
             <p onClick={() => logout({ returnTo: window.location.origin })}>Log Out</p>
 
-            <p className="reset-password">Reset Password</p>
+            <p className="reset-password" onClick={handleResetPassword}>Reset Password</p>
             <p className="delete-account" onClick={handleDeleteClick}>Delete Account</p>
 
             {showDeleteModal && (
