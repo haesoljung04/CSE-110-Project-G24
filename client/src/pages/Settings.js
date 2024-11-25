@@ -1,12 +1,14 @@
-import React, {useState} from "react";
+// src/pages/Settings.js
+import React, { useState, useContext } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import '../styles/Settings.css'
+import { ThemeContext } from '../context/ThemeContext'; // Import the context
+import '../styles/Settings.css';
 
 export const Settings = () => {
     const { logout } = useAuth0();
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-
     const { getAccessTokenSilently, user } = useAuth0();
+    const { isDarkMode, toggleTheme } = useContext(ThemeContext); // Use context for theme
 
     const handleResetPassword = async () => {
         const token = await getAccessTokenSilently();
@@ -19,8 +21,8 @@ export const Settings = () => {
                 },
                 body: JSON.stringify({
                     client_id: process.env.REACT_APP_AUTH0_CLIENT_ID,
-                    email: user.email, // Replace with the logged-in user's email
-                    connection: 'Username-Password-Authentication', // Default database connection
+                    email: user.email,
+                    connection: 'Username-Password-Authentication',
                 }),
             });
             alert('Password reset email sent!');
@@ -38,7 +40,6 @@ export const Settings = () => {
     };
 
     const handleConfirmDelete = () => {
-        //neeed to finish this!!!!
         console.log("Account deleted");
         setShowDeleteModal(false);
     };
@@ -46,7 +47,6 @@ export const Settings = () => {
     return (
         <div className="settings-container">
             <h1 className="settings-title">Settings</h1>
-            
             <div className="center-buttons">
                 <button className="edit-profile-image">Edit</button>
                 <button className="edit-profile">Edit Profile</button>
@@ -60,16 +60,20 @@ export const Settings = () => {
                 </label>
             </div>
 
+            {/* Toggle Light/Dark Mode */}
             <div className="light-dark-mode">
                 <label>Light/Dark mode</label>
                 <label className="slider">
-                    <input type="checkbox" />
+                    <input 
+                        type="checkbox" 
+                        checked={isDarkMode} 
+                        onChange={toggleTheme} // Call the toggleTheme function
+                    />
                     <span className="slider-container"></span>
                 </label>
             </div>
 
             <p onClick={() => logout({ returnTo: window.location.origin })}>Log Out</p>
-
             <p className="reset-password" onClick={handleResetPassword}>Reset Password</p>
             <p className="delete-account" onClick={handleDeleteClick}>Delete Account</p>
 

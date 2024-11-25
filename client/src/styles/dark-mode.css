@@ -1,0 +1,21 @@
+body {
+    background-color: #fff;
+    color: #000;
+  }
+  
+  /* Dark Mode Styles */
+  body.dark-mode {
+    background-color: #121212;
+    color: #fff;
+  }
+  
+  .slider-container {
+    /* Styles for your theme toggle */
+  }
+  
+  input[type="checkbox"]:checked + .slider-container {
+    background-color: #4caf50;
+  }
+  
+  /* Add any other global dark mode styles here */
+  
