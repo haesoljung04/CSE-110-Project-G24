@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import WorkoutRoutineDisplay from './pages/workoutRoutineDisplay';
 
 function App() {
   const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
@@ -24,18 +25,40 @@ function App() {
     }
   }, [isAuthenticated, user]);
   
+  // return (
+  //   <div>
+  //     <h1>Message from Backend:</h1>
+  //     <p>{message}</p>
+
+  //     {!isAuthenticated ? (
+  //       <button onClick={() => loginWithRedirect()}>Log In</button>
+  //     ) : (
+  //       <>
+  //         <button onClick={() => logout({ returnTo: window.location.origin })}>Log Out</button>
+  //         <h2>Welcome, {user.name}</h2>
+  //       </>
+  //     )}
+  //   </div>
+  // );
+
+  // Testing purpose for workout routine display frontend
   return (
     <div>
-      <h1>Message from Backend:</h1>
-      <p>{message}</p>
-
       {!isAuthenticated ? (
-        <button onClick={() => loginWithRedirect()}>Log In</button>
+        <div>
+          <h1>Message from Backend:</h1>
+          <p>{message}</p>
+          <button onClick={() => loginWithRedirect()}>Log In</button>
+        </div>
       ) : (
-        <>
-          <button onClick={() => logout({ returnTo: window.location.origin })}>Log Out</button>
+        <div>
+          <button onClick={() => logout({ returnTo: window.location.origin })}>
+            Log Out
+          </button>
           <h2>Welcome, {user.name}</h2>
-        </>
+          {/* Render the WorkoutRoutineDisplay page */}
+          <WorkoutRoutineDisplay />
+        </div>
       )}
     </div>
   );
