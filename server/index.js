@@ -5,6 +5,8 @@ const dotenv = require('dotenv');
 const sequelize = require('./db'); // Import Sequelize instance
 const User = require('./models/User'); // Import User model
 const FriendRequest = require('./models/FriendRequest'); // Import FriendRequest model
+const friendController = require('./controllers/friendController');
+
 
 // Initialize dotenv to access environment variables
 dotenv.config();
@@ -41,6 +43,7 @@ app.get('/api', (req, res) => {
   res.json({ message: 'Hello from the backend!' });
 });
 
+app.post('/add-friend', friendController.sendFriendRequest);
 // Route to add or update a user in the database
 app.post('/api/users', async (req, res) => {
   try {

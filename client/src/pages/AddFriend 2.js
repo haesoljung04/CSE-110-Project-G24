@@ -6,7 +6,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 const AddFriend = () => {
   const [email, setEmail] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
-  const { user, getAccessTokenSilently } = useAuth0(); // Get user and token
+  const { user } = useAuth0(); // Get user info from Auth0
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -14,21 +14,21 @@ const AddFriend = () => {
 
   const handleSendRequest = async () => {
     try {
-      // Retrieve Auth0 token
-      const token = await getAccessTokenSilently();
-
-      // Send the request to the backend
-      const response = await axios.post(
-        'http://localhost:5001/api/send-friend-request',
-        {
-          recipientEmail: email, // Email entered by the user
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, // Add Auth0 token to headers
-          },
-        }
+      // Validate recipient email directly against the local database
+      const userCheckResponse = await axios.get(
+        `http://localhost:5001/api/users/check?email=${encodeURIComponent(email)}`
       );
+
+      if (!userCheckResponse.data.exists) {
+        setStatusMessage('The specified email does not belong to a registered user.');
+        return;
+      }
+
+      // Send the friend request to the backend
+      const response = await axios.post('http://localhost:5001/add-friend', {
+        requesterEmail: user.email, // Logged-in user's email
+        recipientEmail: email.trim() // Email entered in the input field
+      });
 
       // Display success message
       setStatusMessage(response.data.message || 'Friend request sent!');

@@ -4,24 +4,33 @@ const FriendRequest = require('../models/FriendRequest');
 // Send a friend request
 exports.sendFriendRequest = async (req, res) => {
   try {
-    const auth0Id = req.user.sub; // Extract Auth0 user ID from the token
-    const { recipientEmail } = req.body;
+    console.log('Request body:', req.body); // Log the incoming request body
+    console.log('Request headers:', req.headers.authorization); // Log authorization headers for debugging
 
-    // Find the requester in the database using Auth0 ID
-    const requester = await User.findOne({ where: { auth0_id: auth0Id } });
+    const { requesterEmail, recipientEmail } = req.body;
+
+    // Validate the requester (sender)
+    const requester = await User.findOne({ where: { email: requesterEmail } });
     if (!requester) {
+      console.log('Requester not found in database:', requesterEmail);
       return res.status(404).json({ message: 'Requester not found' });
     }
+    console.log('Requester found:', requester);
 
-    // Find or create the recipient user by email
-    const [recipient] = await User.findOrCreate({ where: { email: recipientEmail } });
+    // Validate the recipient
+    const recipient = await User.findOne({ where: { email: recipientEmail } });
+    if (!recipient) {
+      console.log('Recipient not found in database:', recipientEmail);
+      return res.status(404).json({ message: 'Recipient not found' });
+    }
+    console.log('Recipient found:', recipient);
 
-    // Check for existing friend request
+    // Check for existing friend requests
     const existingRequest = await FriendRequest.findOne({
       where: { requesterId: requester.id, recipientId: recipient.id, status: 'pending' },
     });
-
     if (existingRequest) {
+      console.log('Duplicate friend request found between:', requester.id, recipient.id);
       return res.status(400).json({ message: 'Friend request already sent' });
     }
 
@@ -30,39 +39,12 @@ exports.sendFriendRequest = async (req, res) => {
       requesterId: requester.id,
       recipientId: recipient.id,
     });
+    console.log('Friend request created successfully:', friendRequest);
 
     res.status(201).json({ message: 'Friend request sent!', friendRequest });
   } catch (error) {
-    console.error(error);
+    console.error('Error in sendFriendRequest:', error);
     res.status(500).json({ message: 'Error sending friend request', error });
-  }
-};
-exports.getFriendRequests = async (req, res) => {
-  try {
-    const auth0Id = req.user.sub; // Extract Auth0 user ID from the token
-
-    // Find the logged-in user
-    const user = await User.findOne({ where: { auth0_id: auth0Id } });
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    // Find all friend requests where the recipient is the logged-in user
-    const requests = await FriendRequest.findAll({
-      where: { recipientId: user.id },
-      include: [
-        {
-          model: User,
-          as: 'Requester',
-          attributes: ['id', 'email'], // Include specific fields from the requester
-        },
-      ],
-    });
-
-    res.status(200).json(requests);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error retrieving friend requests', error });
   }
 };
 
