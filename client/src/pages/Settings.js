@@ -41,6 +41,7 @@ export const Settings = () => {
 
     const handleConfirmDelete = () => {
         console.log("Account deleted");
+        logout({ returnTo: window.location.origin });
         setShowDeleteModal(false);
     };
 

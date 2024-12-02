@@ -45,6 +45,7 @@ function App() {
       {!isAuthenticated ? (
         <button onClick={() => loginWithRedirect()}>Log In</button>
       ) : (
+        
         <Settings /> // Show the Settings component if authenticated
       )}
     </div>
