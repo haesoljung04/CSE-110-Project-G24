@@ -40,6 +40,7 @@ function App() {
   
   return (
     <div>
+      {/* Conditionally render based on authentication */}
       {!isAuthenticated ? (
         <SignInPage /> 
       ) : (
