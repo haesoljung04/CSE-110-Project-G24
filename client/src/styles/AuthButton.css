@@ -4,6 +4,8 @@
     border: none;
     border-radius: 25px;
     text-align: center;
+    height: 60px; /* Set a height for the button */
+    font-size: 30px; /* Increase font size */
     width: 200px;
 }
 .signin-container {
