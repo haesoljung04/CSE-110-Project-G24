@@ -47,8 +47,9 @@ function App() {
         <>
           <button onClick={() => logout({ returnTo: window.location.origin })}>Log Out</button>
           <h2>Welcome, {user.name}</h2>
+          <Settings/> // Show the Settings component if authenticated
         </>
-      <Settings/> // Show the Settings component if authenticated
+      
       )}
 
     </div>
