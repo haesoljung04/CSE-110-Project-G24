@@ -1,21 +1,29 @@
-body {
-    background-color: #fff;
-    color: #000;
-  }
-  
-  /* Dark Mode Styles */
-  body.dark-mode {
-    background-color: #121212;
-    color: #fff;
-  }
-  
-  .slider-container {
-    /* Styles for your theme toggle */
-  }
-  
-  input[type="checkbox"]:checked + .slider-container {
-    background-color: #4caf50;
-  }
-  
-  /* Add any other global dark mode styles here */
-  
+/* Dark Mode Styles */
+body.dark-mode {
+  background-color: #121212;
+  color: #fff;
+}
+
+/* Modal Styles for Dark Mode */
+body.dark-mode .modal-overlay {
+  background-color: rgba(0, 0, 0, 0.7); /* Darker background for modal overlay */
+}
+
+body.dark-mode .modal-content {
+  background-color: #333; /* Darker background for modal */
+  color: #fff; /* White text inside the modal */
+}
+
+body.dark-mode .modal-delete-button,
+body.dark-mode .modal-cancel-button {
+  background-color: #444; /* Darker background for buttons */
+  color: white; /* White text on buttons */
+}
+
+body.dark-mode .modal-delete-button {
+  background-color: red; /* Red delete button stays the same */
+}
+
+body.dark-mode .modal-cancel-button {
+  background-color: grey; /* Grey cancel button stays the same */
+}

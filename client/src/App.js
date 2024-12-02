@@ -40,8 +40,13 @@ function App() {
 
   return (
     <div>
-      {/* Render the Settings component */}
-      <Settings />
+
+      {/* Conditionally render based on authentication */}
+      {!isAuthenticated ? (
+        <button onClick={() => loginWithRedirect()}>Log In</button>
+      ) : (
+        <Settings /> // Show the Settings component if authenticated
+      )}
     </div>
   );
 }
