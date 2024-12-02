@@ -1,0 +1,164 @@
+.settings-container {
+    margin: 20px;
+    font-family: Arial, sans-serif;
+    align-items: center;
+    overflow-x: hidden; /* Prevent horizontal scrolling within the container */
+    max-width: 100%; /* Ensure container does not exceed screen width */
+    box-sizing: border-box; /* Prevent padding from causing overflow */
+}
+
+.settings-title {
+    font-size: 24px;
+    font-weight: bold;
+    align-self: flex-start;
+}
+
+.center-buttons {
+    display: flex;
+    flex-direction: column; /* Stack the buttons vertically */
+    justify-content: center; /* Center them horizontally */
+    align-items: center; /* Center them horizontally */
+    margin-bottom: 20px; /* Optional: Adds space below the centered buttons */
+}
+
+.edit-profile-image {
+    margin-bottom: 20px; /* Adds space below the Edit button */
+    width: 80px; /* Set the width of the button */
+    height: 80px; /* Set the height to the same value as width */
+    border-radius: 50%; /* Makes the button a circle */
+    background-color: lightgray; /* Optional: Set the background color */
+    border: none; /* Optional: Remove the border */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px; /* Optional: Adjust the font size if there's text */
+}
+
+.edit-button {
+    display: block;
+    background-color: lightgray;
+    border: none;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    margin: 10px 0;
+    font-size: 16px;
+
+}
+
+.edit-name {
+    text-align: center;
+}
+
+.ghost-mode {
+    margin-bottom: 20px; /* Adds space between Ghost mode and Light/Dark mode */
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+
+.logout-link {
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.reset-password {
+    margin-top: 10px;
+}
+
+.delete-account {
+    color: red;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it appears on top of other content */
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-delete-button,
+.modal-cancel-button {
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal-delete-button {
+    background-color: red;
+    color: white;
+}
+
+.modal-cancel-button {
+    background-color: grey;
+    color: white;
+}
+
+
+/* Smaller slider styles */
+.slider {
+    position: relative;
+    display: inline-block;
+    width: 34px; /* Set the width of the smaller slider */
+    height: 18px; /* Set the height of the smaller slider */
+    margin-left: 10px;
+}
+
+.slider input {
+    opacity: 0; /* Hide the default checkbox */
+    width: 0;
+    height: 0;
+}
+
+.slider .slider-container {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc; /* Default background color */
+    transition: 0.4s;
+    border-radius: 34px; /* Round the corners */
+}
+
+.slider .slider-container:before {
+    content: "";
+    position: absolute;
+    height: 10px; /* Smaller size for the inner circle */
+    width: 10px; /* Same as height for a circle */
+    border-radius: 50%;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+}
+
+.slider input:checked + .slider-container {
+    background-color: #4CAF50; /* Background color when checked */
+}
+
+.slider input:checked + .slider-container:before {
+    transform: translateX(16px); /* Moves the inner circle to the right */
+}
