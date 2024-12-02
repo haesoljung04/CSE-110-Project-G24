@@ -50,20 +50,20 @@ export const Settings = () => {
             <h1 className="settings-title">Settings</h1>
             <div className="center-buttons">
                 <button className="edit-profile-image">Edit</button>
-                <button className="edit-profile">Edit Profile</button>
+                {user && <p className="user-name">{user.name}</p>} 
             </div>
-
+{/* 
             <div className="ghost-mode">
                 <label>Ghost mode</label>
                 <label className="slider">
                     <input type="checkbox" />
                     <span className="slider-container"></span>
                 </label>
-            </div>
+            </div> */}
 
             {/* Toggle Light/Dark Mode */}
             <div className="light-dark-mode">
-                <label>Light/Dark mode</label>
+                <label>Dark mode</label>
                 <label className="slider">
                     <input 
                         type="checkbox" 
@@ -75,7 +75,7 @@ export const Settings = () => {
             </div>
 
             <p onClick={() => logout({ returnTo: window.location.origin })}>Log Out</p>
-            <p className="reset-password" onClick={handleResetPassword}>Reset Password</p>
+            {/* <p className="reset-password" onClick={handleResetPassword}>Reset Password</p> */}
             <p className="delete-account" onClick={handleDeleteClick}>Delete Account</p>
 
             {showDeleteModal && (
