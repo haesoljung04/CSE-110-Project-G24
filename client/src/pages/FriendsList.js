@@ -46,7 +46,7 @@ const FriendsList = () => {
 
   // Replacing placeholders and actually fetching friends from the backend
   useEffect(() => {
-    fetch('/api/friends')
+    fetch('http://localhost:5001/api/friends')
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to fetch friends list');
@@ -58,7 +58,7 @@ const FriendsList = () => {
   }, []);
 
   const handleBlock = (id) => {
-    fetch('/api/friends/block-friend', {
+    fetch('http://localhost:5001/api/friends/block-friend', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id }),
@@ -78,7 +78,7 @@ const FriendsList = () => {
   };
   
   const handleDelete = (id) => {
-    fetch('/api/friends/delete-friend', {
+    fetch('http://localhost:5001/api/friends/delete-friend', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id }),
