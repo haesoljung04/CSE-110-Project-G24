@@ -75,6 +75,7 @@ function App() {
           <button onClick={() => logout({ returnTo: window.location.origin })}>Log Out</button>
           <h2>Welcome, {user.name}</h2>
           <Settings/>
+          <WorkoutRoutineDisplay /> {/* Add the Workout Routine Display here */}
         </>
       
       )}

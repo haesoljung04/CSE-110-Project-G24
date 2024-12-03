@@ -155,7 +155,7 @@ import "./workoutRoutineDisplay.css";
 
 const WorkoutRoutineDisplay = () => {
   const allExercises = [
-    "Arnold Press  ", "Back Squa  ", "Barbell Bench Press  ", "Barbell Curl  ", "Barbell Deadlift  ",
+    "Arnold Press  ", "Back Squat  ", "Barbell Bench Press  ", "Barbell Curl  ", "Barbell Deadlift  ",
     "Barbell Front Squat  ", "Barbell Overhead Press  ", "Barbell Row  ", "Barbell Shrug  ", "Bench Press  ",
     "Bicep Curl  ", "Bulgarian Split Squat  ", "Cable Crossover  ", "Cable Lateral Raise  ", "Cable Pull-Through  ",
     "Cable Row  ", "Cable Tricep Pushdown  ", "Calf Raise  ", "Chest Fly  ", "Chin-Up  ", "Clean  ", "Clean and Jerk  ",
@@ -191,10 +191,38 @@ const WorkoutRoutineDisplay = () => {
     );
   };
 
+  // const saveRoutine = () => {
+  //   // need to connect to backend
+  //   console.log("Saved Routine:", workoutRoutine);
+  //   alert("Your workout routine has been saved!");
+  // };
+
   const saveRoutine = () => {
-    // need to connect to backend
-    console.log("Saved Routine:", workoutRoutine);
-    alert("Your workout routine has been saved!");
+    const userId = 1; // Replace with the actual user ID
+
+    fetch("http://localhost:5001/api/workout/save", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId,
+        routine: workoutRoutine,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to save workout routine");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        alert(data.message);
+      })
+      .catch((error) => {
+        console.error("Error saving workout routine:", error);
+        alert("An error occurred while saving your workout routine.");
+      });
   };
 
   return (
