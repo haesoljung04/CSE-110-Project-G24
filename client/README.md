@@ -68,3 +68,35 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+
+### Friendlist Database"
+Run follwing commands
+
+1. 
+USE workout_app;
+(if doesn't exist run CREATE DATABASE workout_app; and then run USE workout_app);
+
+2. 
+CREATE TABLE friends (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    blocked BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+3. Insert for testing purpose (Only Sarah Taylor is blocked initially)
+INSERT INTO friends (name, blocked) VALUES
+('Michael Brown', FALSE),
+('Emily Davis', FALSE),
+('Chris Wilson', FALSE),
+('Sarah Taylor', TRUE),
+('David Harris', FALSE);
+
+4. Checking table
+SELECT * FROM friends;
+
+
+
