@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql2');
 const dotenv = require('dotenv');
+const workoutRoutineDisplayRoute = require("./routes/workoutRoutineDisplayRoute");
 
 // Initialize dotenv to access environment variables
 dotenv.config();
@@ -38,6 +39,8 @@ db.connect((err) => {
   console.log('Connected to MySQL!');
 });
 
+// workout routine display route
+app.use("/api/workout", workoutRoutineDisplayRoute(db));
 // Example route
 app.get('/api', (req, res) => {
   res.json({ message: 'Hello from the backend!' });

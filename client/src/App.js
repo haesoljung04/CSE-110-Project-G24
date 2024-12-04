@@ -3,6 +3,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { SignInPage } from './pages/SignInPage';
 import { Settings } from './pages/Settings';
 import { ThemeContext } from './context/ThemeContext';  // Import context
+import WorkoutRoutineDisplay from './pages/workoutRoutineDisplay';
 
 function App() {
   const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
@@ -38,6 +39,32 @@ function App() {
     }
   }, [isDarkMode]); // This will run whenever `isDarkMode` changes
   
+  // Apply dark mode styles when the theme changes
+  useEffect(() => {
+    if (isDarkMode) {
+      document.body.classList.add('dark-mode'); // Add dark mode class
+    } else {
+      document.body.classList.remove('dark-mode'); // Remove dark mode class
+    }
+  }, [isDarkMode]); // This will run whenever `isDarkMode` changes
+  
+  // return (
+  //   <div>
+  //     <h1>Message from Backend:</h1>
+  //     <p>{message}</p>
+
+  //     {!isAuthenticated ? (
+  //       <button onClick={() => loginWithRedirect()}>Log In</button>
+  //     ) : (
+  //       <>
+  //         <button onClick={() => logout({ returnTo: window.location.origin })}>Log Out</button>
+  //         <h2>Welcome, {user.name}</h2>
+  //       </>
+  //     )}
+  //   </div>
+  // );
+
+  // Testing purpose for workout routine display frontend
   return (
     <div>
       {/* Conditionally render based on authentication */}
@@ -48,6 +75,7 @@ function App() {
           <button onClick={() => logout({ returnTo: window.location.origin })}>Log Out</button>
           <h2>Welcome, {user.name}</h2>
           <Settings/>
+          <WorkoutRoutineDisplay /> {/* Add the Workout Routine Display here */}
         </>
       
       )}
