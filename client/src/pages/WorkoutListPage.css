@@ -1,0 +1,100 @@
+/* General page styling */
+.workout-list-page {
+    font-family: 'Arial', sans-serif;
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+  
+  /* Workout list styling */
+  .workout-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .workout-card {
+    background-color: #f9f9f9;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  
+  .workout-card:hover {
+    transform: translateY(-5px);
+    border-color: #4caf50;
+  }
+  
+  .workout-card.selected {
+    border-color: #4caf50;
+    background-color: #e8f5e9;
+  }
+  
+  /* Buttons styling */
+  .action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .start-button {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .start-button:hover {
+    background-color: #45a049;
+  }
+  
+  .random-button {
+    background-color: #2196f3;
+    color: white;
+  }
+  
+  .random-button:hover {
+    background-color: #1976d2;
+  }
+
+  /* Weather container */
+.weather-container {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .weather-container img {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .weather-container .weather-description {
+    font-size: 18px;
+    color: #555;
+  }
+  
+  .weather-container .loading,
+  .weather-container .error {
+    font-size: 16px;
+    font-style: italic;
+    color: #888;
+  }
+  
+  

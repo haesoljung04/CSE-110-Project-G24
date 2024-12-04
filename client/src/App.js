@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import WorkoutPage from './pages/WorkoutPage'; 
+import BlockedFriendsPage from './pages/BlockedFriendsPage';
+import WorkoutListPage from './pages/WorkoutListPage';
 
 function App() {
   const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
@@ -26,21 +29,18 @@ function App() {
   }, [isAuthenticated, user]);
   
   return (
-    <div>
-      <h1>Message from Backend:</h1>
-      <p>{message}</p>
-      <WorkoutPage />
-
-      {!isAuthenticated ? (
-        <button onClick={() => loginWithRedirect()}>Log In</button>
-      ) : (
-        <>
-          <button onClick={() => logout({ returnTo: window.location.origin })}>Log Out</button>
-          <h2>Welcome, {user.name}</h2>
-        </>
-      )}
-    </div>
+    <Router>
+      <div>
+        <Routes>
+          <Route path="/workouts" element={<WorkoutPage />} />
+          <Route path="/friends/blocked" element={<BlockedFriendsPage />} />
+          <Route path="/workoutslist" element={<WorkoutListPage />} /> 
+        </Routes>
+      </div>
+    </Router>
   );
+
+  
 }
 
 export default App;
