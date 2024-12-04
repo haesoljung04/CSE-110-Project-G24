@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { SignInPage } from './pages/SignInPage';
+import FriendsList from './pages/FriendsList'; 
 import { Settings } from './pages/Settings';
 import { ThemeContext } from './context/ThemeContext';  // Import context
 import WorkoutRoutineDisplay from './pages/workoutRoutineDisplay';
