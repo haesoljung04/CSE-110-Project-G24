@@ -56,6 +56,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import CheckInPage from './pages/Checkin';
+import PendingFriends from './pages/PendingFriends';
+import ProgressReport from './pages/ProgressReport';
 
 function App() {
   const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
@@ -81,7 +83,7 @@ function App() {
   }, [isAuthenticated, user]);
 
   return (
-    isAuthenticated ? <CheckInPage user={user} /> :
+    isAuthenticated ? <ProgressReport user={user} /> :
     <div>
         <h1>Message from Backend:</h1>
         <p>{message}</p>

@@ -1,4 +1,4 @@
-// server/index.js
+
 const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql2');
@@ -10,12 +10,11 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-
 // Enable CORS for all origins (or specify allowed origins)
 app.use(cors({
   origin: 'http://localhost:3000', // Allow requests from the React app's origin
-  methods: ['GET', 'POST', 'DELETE', 'PUT'],         // Specify allowed HTTP methods
-  credentials: true                 // Allow cookies or credentials if needed
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed HTTP methods
+  credentials: true // Allow cookies or credentials if needed
 }));
 
 // Middleware to handle JSON requests
@@ -38,9 +37,51 @@ db.connect((err) => {
   console.log('Connected to MySQL!');
 });
 
-// Example route
-app.get('/api', (req, res) => {
-  res.json({ message: 'Hello from the backend!' });
+// Create tables if they do not exist
+const createTables = () => {
+  const usersTableQuery = `CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    auth0_id VARCHAR(255) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL
+  )`;
+
+  const exerciseTableQuery = `CREATE TABLE IF NOT EXISTS exercises (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    name VARCHAR(255) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  )`;
+
+  const weightTableQuery = `CREATE TABLE IF NOT EXISTS weights (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    exercise_id INT,
+    weight INT,
+    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (exercise_id) REFERENCES exercises(id) ON DELETE CASCADE
+  )`;
+
+  db.query(usersTableQuery, (err) => {
+    if (err) throw err;
+    console.log('Users table ready');
+  });
+
+  db.query(exerciseTableQuery, (err) => {
+    if (err) throw err;
+    console.log('Exercises table ready');
+  });
+
+  db.query(weightTableQuery, (err) => {
+    if (err) throw err;
+    console.log('Weights table ready');
+  });
+};
+
+createTables();
+
+// Root route to display a simple message
+app.get('/', (req, res) => {
+  res.send('Welcome to the Progress Report API');
 });
 
 // Route to add or update a user in the database
@@ -53,24 +94,62 @@ app.post('/api/users', (req, res) => {
   });
 });
 
-// Route to record user actions
-app.post('/api/actions', (req, res) => {
-  const { auth0_id, action_type, action_details } = req.body;
-  const sqlUser = 'SELECT id FROM users WHERE auth0_id = ?';
-  db.query(sqlUser, [auth0_id], (err, results) => {
-    if (err) return res.status(500).send(err);
-    if (results.length === 0) return res.status(404).send({ message: 'User not found' });
-
-    const user_id = results[0].id;
-    const sqlAction = 'INSERT INTO actions (user_id, action_type, action_details) VALUES (?, ?, ?)';
-    db.query(sqlAction, [user_id, action_type, action_details], (err) => {
-      if (err) return res.status(500).send(err);
-      res.send({ message: 'Action recorded' });
-    });
+// Route to add a new exercise for a user
+app.post('/api/exercises', (req, res) => {
+  const { user_id, name } = req.body;
+  db.query('INSERT INTO exercises (user_id, name) VALUES (?, ?)', [user_id, name], (err, result) => {
+    if (err) {
+      console.error('Error adding exercise:', err);
+      res.status(500).send('Internal server error');
+    } else {
+      res.status(201).json({ id: result.insertId, user_id, name });
+    }
   });
 });
 
-// Start the server
-app.listen(PORT, () => {
+// Route to add a weight entry for an exercise
+app.post('/api/weights', (req, res) => {
+  const { exercise_id, weight } = req.body;
+  db.query('INSERT INTO weights (exercise_id, weight) VALUES (?, ?)', [exercise_id, weight], (err, result) => {
+    if (err) {
+      console.error('Error adding weight entry:', err);
+      res.status(500).send('Internal server error');
+    } else {
+      res.status(201).json({ id: result.insertId, exercise_id, weight });
+    }
+  });
+});
+
+// Route to get all exercises for a user
+app.get('/api/users/:user_id/exercises', (req, res) => {
+  const { user_id } = req.params;
+  db.query('SELECT * FROM exercises WHERE user_id = ?', [user_id], (err, results) => {
+    if (err) {
+      console.error('Error fetching exercises:', err);
+      res.status(500).send('Internal server error');
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+// Route to get weight progress for a specific exercise
+app.get('/api/exercises/:id/weights', (req, res) => {
+  const { id } = req.params;
+  db.query('SELECT * FROM weights WHERE exercise_id = ?', [id], (err, results) => {
+    if (err) {
+      console.error('Error fetching weight progress:', err);
+      res.status(500).send('Internal server error');
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+// Start the server and export the server instance
+const server = app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+// Export both the app and the database connection
+module.exports = { server, db };
