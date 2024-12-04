@@ -4,6 +4,8 @@ const cors = require('cors');
 const mysql = require('mysql2');
 const dotenv = require('dotenv');
 const workoutRoutineDisplayRoute = require("./routes/workoutRoutineDisplayRoute");
+const friendAllRoute = require('./routes/friendAllRoute');
+const friendBlockedRoute = require('./routes/friendBlockedRoute');
 
 // Initialize dotenv to access environment variables
 dotenv.config();
@@ -38,6 +40,11 @@ db.connect((err) => {
   }
   console.log('Connected to MySQL!');
 });
+
+// Friends page - All friends
+app.use('/api/friends', friendAllRoute(db));
+// Friends page - Blocked friends
+app.use('/api/friends/blocked', friendBlockedRoute(db));
 
 // workout routine display route
 app.use("/api/workout", workoutRoutineDisplayRoute(db));

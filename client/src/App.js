@@ -76,6 +76,7 @@ function App() {
           <h2>Welcome, {user.name}</h2>
           <Settings/>
           <WorkoutRoutineDisplay /> {/* Add the Workout Routine Display here */}
+          <FriendsList/>
         </>
       
       )}
