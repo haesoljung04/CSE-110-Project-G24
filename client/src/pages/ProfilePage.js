@@ -1,34 +1,41 @@
-import React from 'react';
-import './ProfilePage.css'; // Optional, depending on your styling preference
+import React, { useEffect, useState } from 'react';
+import './ProfilePage.css'; // Optional styling
+import { useAuth0 } from '@auth0/auth0-react';
 
 const ProfilePage = () => {
+  const { user, isAuthenticated } = useAuth0();
+  const [profileData, setProfileData] = useState(null);
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      // Fetch user profile data from the backend
+      fetch(`http://localhost:5001/api/profile?auth0_id=${user.sub}`)
+        .then((response) => response.json())
+        .then((data) => setProfileData(data))
+        .catch((error) => console.error('Error fetching profile:', error));
+    }
+  }, [isAuthenticated, user]);
+
+  if (!isAuthenticated || !profileData) {
+    return <p>Loading profile...</p>;
+  }
+
   return (
     <div className="profile-page">
       <section className="profile-header">
-        <div className="profile-picture" />
-        <h2>Name</h2>
+        <img 
+          src={profileData.profile_picture || 'default-profile-pic.jpg'} 
+          alt="Profile" 
+          className="profile-picture"
+        />
+        <h2>{profileData.name}</h2>
       </section>
 
       <section className="workout-tracking">
-        <h3>Monthly Workout Tracking</h3>
-        <div className="tracking-chart"> {/* Replace with chart library if needed */}</div>
-      </section>
-
-      <section className="weekly-goals">
-        <h3>Weekly Goal Streaks</h3>
-        <ul>
-          <li>You achieved 225 pounds of deadlift!</li>
-          <li>You went to the gym 5 days this week!</li>
-          <li>You achieved 200 pounds of benchpress!</li>
-        </ul>
-      </section>
-
-      <section className="progress-report">
-        <h3>Progress Report</h3>
-        <div className="progress-item">
-          <h4>Weightlifting</h4>
-          <div className="progress-chart"> {/* Replace with a graph library if needed */}</div>
-        </div>
+        <h3>Gym Streak</h3>
+        <p>You have gone to the gym {profileData.gym_streak} times!</p>
+        <p>You achieved 225 pounds of deadlift!</p>
+        <p>You achieved 200 pounds of benchpress!</p>
       </section>
     </div>
   );

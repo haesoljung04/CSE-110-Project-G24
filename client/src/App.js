@@ -5,17 +5,17 @@ import FriendsList from './pages/FriendsList';
 import { Settings } from './pages/Settings';
 import { ThemeContext } from './context/ThemeContext';  // Import context
 import WorkoutRoutineDisplay from './pages/workoutRoutineDisplay';
+import ProfilePage from './pages/ProfilePage';
+
 
 function App() {
-  const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
-  const [message, setMessage] = useState('');
+  const { logout, isAuthenticated, user } = useAuth0();
   const { isDarkMode } = useContext(ThemeContext); // Access theme state
 
 
   useEffect(() => {
     fetch('http://localhost:5001/api') // Use full backend URL
       .then((response) => response.json())
-      .then((data) => setMessage(data.message))
       .catch((error) => console.error('Error:', error));
   
     if (isAuthenticated && user) {
@@ -28,6 +28,12 @@ function App() {
           email: user.email
         })
       }).catch((error) => console.error('Error:', error));
+    }
+  }, [isAuthenticated, user]);
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      console.log('Auth0 user ID:', user.sub); // Debugging
     }
   }, [isAuthenticated, user]);
   
@@ -75,6 +81,7 @@ function App() {
         <>
           <button onClick={() => logout({ returnTo: window.location.origin })}>Log Out</button>
           <h2>Welcome, {user.name}</h2>
+          <ProfilePage/>
           <Settings/>
           <WorkoutRoutineDisplay /> {/* Add the Workout Routine Display here */}
           <FriendsList/>
