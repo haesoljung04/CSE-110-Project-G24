@@ -14,8 +14,7 @@ const db = mysql.createConnection({
 // Table creation queries
 const createUsersTable = `
   CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    auth0_id VARCHAR(255) UNIQUE NOT NULL,
+    auth0_id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255),
     email VARCHAR(255) NOT NULL
   );
@@ -29,8 +28,8 @@ const createWorkoutsTable = `
     reps INT NOT NULL,
     weight FLOAT NOT NULL,
     maxOutWeight FLOAT NOT NULL,
-    user_id INT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    user_id VARCHAR(255) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(auth0_id) ON DELETE CASCADE
   );
 `;
 

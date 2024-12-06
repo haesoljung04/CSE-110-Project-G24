@@ -90,6 +90,7 @@ app.post('/api/actions', (req, res) => {
 // API to fetch workouts for a user
 app.get('/api/workouts/:user_id', (req, res) => {
   const { user_id } = req.params;
+  console.log("Fetching workouts for user_id:", user_id); 
   const sql = 'SELECT * FROM workouts WHERE user_id = ?';
   db.query(sql, [user_id], (err, results) => {
     if (err) return res.status(500).send(err);

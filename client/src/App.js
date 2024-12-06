@@ -77,6 +77,8 @@ function App() {
   // );
 
   // Testing purpose for workout routine display frontend
+  const loggedInUserId = user?.sub; 
+  console.log('user ID:', loggedInUserId); 
   return (
     <div>
       {/* Conditionally render based on authentication */}
@@ -99,7 +101,6 @@ function App() {
         <Route path="/" element={<ProfilePage />} />
         <Route path="friends" element={<FriendsList />} />
         <Route path="WorkoutRoutineDisplay" element={<WorkoutRoutineDisplay />} />
-        <Route path="Settings" element={<Settings />} />
         <Route path="WorkoutListPage" element={<WorkoutListPage />} />
         <Route path="WorkoutPage" element={<WorkoutPage />} />
         <Route path="Settings" element={<Settings />}>

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
+
 import './WorkoutListPage.css';
 
 const WorkoutListPage = () => {
@@ -6,7 +8,8 @@ const WorkoutListPage = () => {
   const [selectedWorkout, setSelectedWorkout] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const user_id = 1; // Replace with dynamic user ID (e.g., retrieved from authentication)
+  const { user } = useAuth0();
+  const user_id = user?.sub;// Replace with dynamic user ID (e.g., retrieved from authentication)
 
   // Fetch workouts from the backend
   const fetchWorkouts = async () => {

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useAuth0 } from '@auth0/auth0-react';
 import "./WorkoutPage.css";
 
 const WorkoutPage = () => {
@@ -10,8 +11,8 @@ const WorkoutPage = () => {
   const [maxOutWeight, setMaxOutWeight] = useState("");
   const [notification, setNotification] = useState(""); // For showing success messages
 
-  const user_id = 1; // Replace with dynamic user ID (e.g., from authentication)
-
+  const { user } = useAuth0();
+  const user_id = user?.sub; 
   // Predefined workout types and corresponding workouts
   const workoutTypes = ["Leg Day", "Chest Day", "Arm Day", "Back Day", "Shoulder Day", "Abs Day"];
   const workoutNames = {
