@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./WorkoutPage.css";
 
 const WorkoutPage = () => {
@@ -8,9 +8,9 @@ const WorkoutPage = () => {
   const [reps, setReps] = useState("");
   const [weight, setWeight] = useState("");
   const [maxOutWeight, setMaxOutWeight] = useState("");
-  const [workouts, setWorkouts] = useState([]);
-  const [isEditing, setIsEditing] = useState(false);
-  const [currentWorkoutIndex, setCurrentWorkoutIndex] = useState(null);
+  const [notification, setNotification] = useState(""); // For showing success messages
+
+  const user_id = 1; // Replace with dynamic user ID (e.g., from authentication)
 
   // Predefined workout types and corresponding workouts
   const workoutTypes = ["Leg Day", "Chest Day", "Arm Day", "Back Day", "Shoulder Day", "Abs Day"];
@@ -23,91 +23,44 @@ const WorkoutPage = () => {
     "Abs Day": ["Crunches", "Plank", "Russian Twist", "Leg Raise", "Bicycle Crunch"],
   };
 
-  // Fetch workouts from the backend
-  useEffect(() => {
-    const fetchWorkouts = async () => {
-      try {
-        const response = await fetch("http://localhost:5001/api/workouts/get?userId=1"); // Replace with dynamic userId
-        if (!response.ok) throw new Error("Failed to fetch workouts.");
-        const data = await response.json();
-        setWorkouts(data.routines || []); // Set fetched workouts
-      } catch (error) {
-        console.error(error.message);
-      }
-    };
-
-    fetchWorkouts();
-  }, []);
-
-  const handleAddOrUpdateWorkout = async (e) => {
+  const handleAddWorkout = async (e) => {
     e.preventDefault();
     if (workoutType && workoutName && sets && reps && weight && maxOutWeight) {
-      const newWorkout = { workoutType, workoutName, sets, reps, weight, maxOutWeight };
+      const workoutData = {
+        workoutType,
+        workoutName,
+        sets: parseInt(sets),
+        reps: parseInt(reps),
+        weight: parseFloat(weight),
+        maxOutWeight: parseFloat(maxOutWeight),
+        user_id,
+      };
 
-      if (isEditing) {
-        const updatedWorkouts = workouts.map((workout, index) =>
-          index === currentWorkoutIndex ? newWorkout : workout
-        );
-        setWorkouts(updatedWorkouts);
-        setIsEditing(false);
-        setCurrentWorkoutIndex(null);
-      } else {
-        setWorkouts([...workouts, newWorkout]);
-      }
-
-      // Clear form fields
-      setWorkoutName("");
-      setSets("");
-      setReps("");
-      setWeight("");
-      setMaxOutWeight("");
-
-      // Save workouts to the backend
       try {
-        const response = await fetch("http://localhost:5001/api/workouts/save", {
+        const response = await fetch("http://localhost:5001/api/workouts", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId: 1, workouts: [...workouts, newWorkout] }), // Replace with dynamic userId
+          body: JSON.stringify(workoutData),
         });
 
-        if (!response.ok) throw new Error("Failed to save workouts.");
-        const data = await response.json();
-        console.log(data.message);
+        if (!response.ok) throw new Error("Failed to add workout.");
+
+        // Show notification
+        setNotification(`"${workoutName}" successfully added!`);
+
+        // Clear the notification after 3 seconds
+        setTimeout(() => setNotification(""), 3000);
+
+        // Clear form fields
+        setWorkoutType("");
+        setWorkoutName("");
+        setSets("");
+        setReps("");
+        setWeight("");
+        setMaxOutWeight("");
       } catch (error) {
-        console.error(error.message);
+        console.error("Error adding workout:", error.message);
       }
-    }
-  };
-
-  const handleEditWorkout = (index) => {
-    const workout = workouts[index];
-    setWorkoutType(workout.workoutType);
-    setWorkoutName(workout.workoutName);
-    setSets(workout.sets);
-    setReps(workout.reps);
-    setWeight(workout.weight);
-    setMaxOutWeight(workout.maxOutWeight);
-    setIsEditing(true);
-    setCurrentWorkoutIndex(index);
-  };
-
-  const handleDeleteWorkout = async (index) => {
-    const updatedWorkouts = workouts.filter((_, i) => i !== index);
-    setWorkouts(updatedWorkouts);
-
-    // Save updated workouts to the backend
-    try {
-      const response = await fetch("http://localhost:5001/api/workouts/save", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: 1, workouts: updatedWorkouts }), // Replace with dynamic userId
-      });
-
-      if (!response.ok) throw new Error("Failed to save workouts.");
-      const data = await response.json();
-      console.log(data.message);
-    } catch (error) {
-      console.error(error.message);
     }
   };
 
@@ -115,7 +68,7 @@ const WorkoutPage = () => {
     <div className="workout-page">
       <h1>Create Workout Plan</h1>
 
-      <form className="workout-form" onSubmit={handleAddOrUpdateWorkout}>
+      <form className="workout-form" onSubmit={handleAddWorkout}>
         <div className="form-group">
           <label>Workout Type:</label>
           <select
@@ -188,35 +141,16 @@ const WorkoutPage = () => {
         </div>
 
         <button type="submit" className="add-workout-button">
-          {isEditing ? "Update Workout" : "Add Workout"}
+          Add Workout
         </button>
       </form>
 
-      <div className="workout-list">
-        <h2>Your Workouts</h2>
-        {workouts.length === 0 ? (
-          <p>No workouts added yet. Start adding your workouts!</p>
-        ) : (
-          <ul>
-            {workouts.map((workout, index) => (
-              <li key={index}>
-                <div className="workout-details">
-                  <strong>{workout.workoutType}</strong>:{" "}
-                  <span className="workout-name">{workout.workoutName}</span> -
-                  <span className="workout-sets">{workout.sets} sets</span>,
-                  <span className="workout-reps">{workout.reps} reps</span>,
-                  <span className="workout-weight">{workout.weight} kg</span>,
-                  <span className="workout-maxout">Max Out: {workout.maxOutWeight} kg</span>
-                </div>
-                <div className="workout-actions">
-                  <button className="edit-workout-button" onClick={() => handleEditWorkout(index)}>Edit</button>
-                  <button className="delete-workout-button" onClick={() => handleDeleteWorkout(index)}>Delete</button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      {/* Notification Message */}
+      {notification && (
+        <div className="notification">
+          <p>{notification}</p>
+        </div>
+      )}
     </div>
   );
 };
