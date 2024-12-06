@@ -9,12 +9,15 @@ const db = mysql.createConnection({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
+  multipleStatements: true,
 });
 
 // Table creation queries
-const createUsersTable = `
-  CREATE TABLE IF NOT EXISTS users (
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+const createTablesQuery = `
+  DROP TABLE IF EXISTS workouts;
+  DROP TABLE IF EXISTS users;
+
+  CREATE TABLE users (
     auth0_id VARCHAR(255) NOT NULL UNIQUE,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
@@ -26,18 +29,16 @@ const createUsersTable = `
     benchpress INT DEFAULT 0,
     deadlift INT DEFAULT 0
   );
-`;
 
-const createWorkoutsTable = `
-  CREATE TABLE IF NOT EXISTS workouts (
+  CREATE TABLE workouts (
     id INT AUTO_INCREMENT PRIMARY KEY,
     workoutName VARCHAR(255) NOT NULL,
     sets INT NOT NULL,
     reps INT NOT NULL,
     weight FLOAT NOT NULL,
     maxOutWeight FLOAT NOT NULL,
-    user_id INT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    user_id VARCHAR(255) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(auth0_id) ON DELETE CASCADE
   );
 `;
 
@@ -49,20 +50,12 @@ db.connect((err) => {
   }
   console.log('Connected to MySQL!');
 
-  db.query(createUsersTable, (err, result) => {
+  db.query(createTablesQuery, (err) => {
     if (err) {
-      console.error('Error creating users table:', err);
-      return;
+      console.error('Error creating tables:', err);
+    } else {
+      console.log('Tables dropped and recreated successfully.');
     }
-    console.log('Users table created or already exists.');
-  });
-
-  db.query(createWorkoutsTable, (err, result) => {
-    if (err) {
-      console.error('Error creating workouts table:', err);
-      return;
-    }
-    console.log('Workouts table created or already exists.');
     db.end(); // Close the connection
   });
 });

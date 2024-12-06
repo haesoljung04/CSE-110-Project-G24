@@ -63,6 +63,7 @@ function App() {
           <h2>Welcome, {user.name}</h2>
 
           <Router>
+
             <header className="navbar">
               <nav>
                 <NavLink to="/" className="nav-link" activeClassName="active-link">

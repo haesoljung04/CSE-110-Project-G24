@@ -77,6 +77,7 @@ app.post('/api/actions', (req, res) => {
 // API to fetch workouts for a user
 app.get('/api/workouts/:user_id', (req, res) => {
   const { user_id } = req.params;
+  console.log("Fetching workouts for user_id:", user_id); 
   const sql = 'SELECT * FROM workouts WHERE user_id = ?';
   db.query(sql, [user_id], (err, results) => {
     if (err) return res.status(500).send(err);
@@ -112,6 +113,51 @@ app.delete('/api/workouts/:id/:user_id', (req, res) => {
   db.query(sql, [id, user_id], (err) => {
     if (err) return res.status(500).send(err);
     res.send({ message: 'Workout deleted' });
+  });
+});
+
+// API to start a workout and conditionally update user stats
+app.post('/api/workouts/start', (req, res) => {
+  const { workoutName, maxOutWeightweight\, user_id } = req.body;
+
+  // Determine the column to update based on the workout name
+  let columnToUpdate;
+  if (workoutName === 'Squat') {
+    columnToUpdate = 'squat';
+  } else if (workoutName === 'Bench Press') {
+    columnToUpdate = 'benchpress';
+  } else if (workoutName === 'Deadlift') {
+    columnToUpdate = 'deadlift';
+  }
+
+  if (!columnToUpdate) {
+    // If the workout is not one of the tracked lifts, return a message
+    return res.status(400).json({ message: 'This workout does not update tracked lifts.' });
+  }
+
+  // Fetch the current value of the column to compare
+  const fetchSql = `SELECT ${columnToUpdate} FROM users WHERE auth0_id = ?`;
+  db.query(fetchSql, [user_id], (err, results) => {
+    if (err) {
+      console.error('Error fetching current stat:', err);
+      return res.status(500).json({ message: 'Failed to fetch current stat.' });
+    }
+
+    const currentValue = results[0][columnToUpdate];
+    if (weight > currentValue) {
+      // Update the column if the new weight is greater
+      const updateSql = `UPDATE users SET ${columnToUpdate} = ? WHERE auth0_id = ?`;
+      db.query(updateSql, [weight, user_id], (updateErr) => {
+        if (updateErr) {
+          console.error('Error updating user stats:', updateErr);
+          return res.status(500).json({ message: 'Failed to update user stats.' });
+        }
+        res.json({ message: `Successfully updated ${columnToUpdate} with weight ${weight}.` });
+      });
+    } else {
+      // Do not update if the new weight is not greater
+      res.json({ message: `No update made. Current ${columnToUpdate}: ${currentValue}, New: ${weight}.` });
+    }
   });
 });
 
