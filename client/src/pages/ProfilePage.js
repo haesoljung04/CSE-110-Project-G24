@@ -29,7 +29,7 @@ const ProfilePage = () => {
       const response = await fetch(`http://localhost:5001/api/profile`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ auth0_id: user.sub, ...updates }),
+        body: JSON.stringify({ auth0_id: user.sub, ...profileData, ...updates }), // Merge existing data with updates
       });
       if (!response.ok) {
         throw new Error('Failed to update profile');
