@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, {useEffect, useContext } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { SignInPage } from './pages/SignInPage';
 import FriendsList from './pages/FriendsList'; 
@@ -82,9 +82,9 @@ function App() {
           <button onClick={() => logout({ returnTo: window.location.origin })}>Log Out</button>
           <h2>Welcome, {user.name}</h2>
           <ProfilePage/>
-          <Settings/>
-          <WorkoutRoutineDisplay /> {/* Add the Workout Routine Display here */}
           <FriendsList/>
+          <WorkoutRoutineDisplay /> {/* Add the Workout Routine Display here */}
+          <Settings/>
         </>
       
       )}
