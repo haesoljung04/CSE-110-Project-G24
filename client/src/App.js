@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import FriendsList from './pages/FriendsList'; 
 import { Settings } from './pages/Settings';
+import { MainPage } from './pages/MainPage';
 import { ThemeContext } from './context/ThemeContext';  // Import context
 import WorkoutRoutineDisplay from './pages/workoutRoutineDisplay';
 import ProfilePage from './pages/ProfilePage';
@@ -77,39 +78,18 @@ function App() {
   // );
 
   // Testing purpose for workout routine display frontend
+
   return (
     <div>
-      {/* Conditionally render based on authentication */}
       {!isAuthenticated ? (
-        <SignInPage /> 
+        <SignInPage /> // Render the sign-in page for unauthenticated users
       ) : (
-        <>
+        <div>
           <button onClick={() => logout({ returnTo: window.location.origin })}>Log Out</button>
-          <h2>Welcome, {user.name}</h2>
-
-
-          <Router>
-      <nav>
-        <Link to="/"> Home </Link>
-        <Link to="friends"> friends </Link>
-        <Link to="WorkoutListPage"> WorkoutListPage </Link>
-        <Link to="WorkoutPage"> CreateWorkout </Link>
-      </nav>
-      <Routes>
-        <Route path="/" element={<ProfilePage />} />
-        <Route path="friends" element={<FriendsList />} />
-        <Route path="WorkoutRoutineDisplay" element={<WorkoutRoutineDisplay />} />
-        <Route path="Settings" element={<Settings />} />
-        <Route path="WorkoutListPage" element={<WorkoutListPage />} />
-        <Route path="WorkoutPage" element={<WorkoutPage />} />
-        <Route path="Settings" element={<Settings />}>
-        </Route>
-      </Routes>
-    </Router>
-        </>
-      
+          {/* <Settings /> */}
+          <MainPage /> {/* Render the MainPage component */}
+        </div>
       )}
-
     </div>
   );
 }

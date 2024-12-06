@@ -1,0 +1,130 @@
+.main-page {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: white;
+  }
+  
+  .main-title {
+    text-align: left;
+    font-size: 18px;
+    color: #aaa;
+  }
+  
+  .profile-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .profile-pic {
+    width: 60px;
+    height: 60px;
+    background-color: #ccc;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 15px;
+  }
+  
+  .welcome-text h2 {
+    margin: 0;
+  }
+  
+  .check-in-button {
+    background-color: #2c2f5f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    margin-top: 5px;
+  }
+  
+  .action-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .action-button {
+    background-color: #e0e0e0;
+    border: none;
+    border-radius: 5px;
+    padding: 15px 20px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .bottom-section {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .friends-list, .last-workout {
+    width: 45%;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    padding: 15px;
+    height: 400px; /* Adjust this value to elongate the columns */
+    overflow-y: auto;
+  }
+  
+  .friends-list ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .friend {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .friend-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  .friend-indicator.green {
+    background-color: green;
+  }
+  
+  .friend-indicator.purple {
+    background-color: purple;
+  }
+  
+  .friend-indicator.black {
+    background-color: black;
+  }
+  
+  .workout-image {
+    width: 100%;
+    border-radius: 5px;
+  }
+
+  /* Dark mode overrides */
+  body.dark-mode .main-page {
+    background-color: #121212;
+    color: white; /* Override text color for dark mode */
+}
+
+body.dark-mode .main-page .main-title {
+    color: #ccc; /* Lighter text color for dark mode */
+}
+
+body.dark-mode .friends-list,
+body.dark-mode .last-workout {
+    background-color: #1e1e1e;
+    border: 1px solid #333; /* Better separation */
+} 
+
+body.dark-mode .welcome-back-text {
+  color: white; /* Only the welcome back text turns white */
+}
+
+body.dark-mode .friend-indicator.black {
+  background-color: white;
+}
