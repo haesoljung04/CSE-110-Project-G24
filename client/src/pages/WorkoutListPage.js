@@ -34,13 +34,32 @@ const WorkoutListPage = () => {
     setSelectedWorkout(workout);
   };
 
-  const handleStartWorkout = () => {
+  const handleStartWorkout = async () => {
     if (selectedWorkout) {
-      alert(`Starting: ${selectedWorkout.workoutName}`);
+      try {
+        const response = await fetch('http://localhost:5001/api/workouts/start', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            workoutName: selectedWorkout.workoutName, // Name of the workout
+            weight: selectedWorkout.maxOutWeight,          // Weight used in the workout
+            user_id,                                 // User ID from Auth0
+          }),
+        });
+  
+        if (!response.ok) throw new Error('Failed to start workout.');
+  
+        const data = await response.json();
+        alert(`Started: ${selectedWorkout.workoutName}\n${data.message}`);
+      } catch (error) {
+        console.error(error.message);
+        alert('Failed to start workout. Please try again.');
+      }
     } else {
       alert('Please select a workout to start!');
     }
   };
+  
 
   const handleStartRandomWorkout = () => {
     if (workouts.length > 0) {
