@@ -14,10 +14,17 @@ const db = mysql.createConnection({
 // Table creation queries
 const createUsersTable = `
   CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    auth0_id VARCHAR(255) UNIQUE NOT NULL,
-    name VARCHAR(255),
-    email VARCHAR(255) NOT NULL
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    auth0_id VARCHAR(255) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    profile_picture VARCHAR(255),
+    gym_streak INT DEFAULT 0,
+    squat INT DEFAULT 0,
+    benchpress INT DEFAULT 0,
+    deadlift INT DEFAULT 0
   );
 `;
 
