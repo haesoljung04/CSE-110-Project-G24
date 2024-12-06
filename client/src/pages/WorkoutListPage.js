@@ -130,3 +130,4 @@ const WorkoutListPage = () => {
 };
 
 export default WorkoutListPage;
+

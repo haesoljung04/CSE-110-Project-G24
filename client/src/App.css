@@ -1,3 +1,4 @@
+/* General App Styles */
 .App {
   text-align: center;
 }
@@ -35,4 +36,59 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* Sticky Navbar Styling */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: #333;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.nav-link {
+  text-decoration: none;
+  color: white;
+  font-size: 16px;
+  padding: 8px 15px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.nav-link:hover {
+  background-color: #555;
+}
+
+.active-link {
+  background-color: #007BFF;
+  color: white;
+}
+
+/* Logout Button Styling */
+.logout-button {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #0056b3;
+}
+
+/* Dark Mode Styling */
+.dark-mode {
+  background-color: #121212;
+  color: white;
 }
