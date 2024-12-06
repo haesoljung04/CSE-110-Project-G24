@@ -1,16 +1,15 @@
 // server/index.js
 const express = require('express');
 const cors = require('cors');
-const mysql = require('mysql2');
-const dotenv = require('dotenv');
 const workoutRoutineDisplayRoute = require("./routes/workoutRoutineDisplayRoute");
 const friendAllRoute = require('./routes/friendAllRoute');
 const friendBlockedRoute = require('./routes/friendBlockedRoute');
 const workoutRoute = require("./routes/workoutRoute");
+const db = require('./db'); // Import only the `db` property
+const dotenv = require('dotenv');
 
-// Initialize dotenv to access environment variables
+
 dotenv.config();
-
 const app = express();
 const PORT = process.env.PORT || 5001;
 
@@ -25,22 +24,14 @@ app.use(cors({
 // Middleware to handle JSON requests
 app.use(express.json());
 
-// Set up MySQL connection
-const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
-});
 
-// Test MySQL connection
-db.connect((err) => {
-  if (err) {
-    console.error('Error connecting to MySQL:', err);
-    return;
-  }
-  console.log('Connected to MySQL!');
-});
+// Routes for profle and checkin
+const profileRoutes = require('./routes/profileRoutes');
+app.use('/api/profile', profileRoutes);
+
+const checkinRoutes = require('./routes/checkinRoutes');
+
+app.use('/api/checkin', checkinRoutes);
 
 // Friends page - All friends
 app.use('/api/friends', friendAllRoute(db));
@@ -53,10 +44,6 @@ app.use("/api/workout", workoutRoutineDisplayRoute(db));
 // workout choose and save route
 app.use("/api/workouts", workoutRoute(db));
 
-// Example route
-app.get('/api', (req, res) => {
-  res.json({ message: 'Hello from the backend!' });
-});
 
 // Route to add or update a user in the database
 app.post('/api/users', (req, res) => {
@@ -90,4 +77,4 @@ const server = app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
 // Export both the app and the database connection
-module.exports = { server, db };
+module.exports = server;
