@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './FriendsList.css';
+import { useAuth0 } from '@auth0/auth0-react'; // Make sure to import useAuth0
 
 const Friend = ({ name, onBlock, onDelete }) => (
   <div className="friend-container">
@@ -13,8 +14,11 @@ const Friend = ({ name, onBlock, onDelete }) => (
 const FriendsList = () => {
   const [friends, setFriends] = useState([]);
   const [error, setError] = useState(null);
+  const [email, setEmail] = useState(''); // State for the email search
+  const [inviteStatus, setInviteStatus] = useState(''); // State for invite status message
+  const { user, isAuthenticated } = useAuth0(); // Using useAuth0 hook
 
-  // Replacing placeholders and actually fetching friends from the backend
+  // Fetch the friends list
   useEffect(() => {
     fetch('http://localhost:5001/api/friends')
       .then(response => {
@@ -27,6 +31,7 @@ const FriendsList = () => {
       .catch(error => setError(error.message));
   }, []);
 
+  // Block a friend
   const handleBlock = (id) => {
     fetch('http://localhost:5001/api/friends/block-friend', {
       method: 'POST',
@@ -47,6 +52,7 @@ const FriendsList = () => {
       .catch(err => alert(err.message));
   };
 
+  // Delete a friend
   const handleDelete = (id) => {
     fetch('http://localhost:5001/api/friends/delete-friend', {
       method: 'POST',
@@ -63,6 +69,61 @@ const FriendsList = () => {
       .catch(err => alert(err.message));
   };
 
+  // Send a friend invite by email
+  const handleSendInvite = () => {
+    if (!email) {
+      alert('Please enter a valid email');
+      return;
+    }
+
+    // Get the sender's email from the Auth0 user object
+    const senderEmail = user?.email; // Use user email from Auth0
+    if (!senderEmail) {
+      alert('Sender email not found');
+      return;
+    }
+    console.log({message: email});
+
+    fetch('http://localhost:5001/api/friends/send-invite', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email, // Friend's email
+        senderEmail, // Sender's email (authenticated user)
+      }),
+    })
+      .then(response => {
+        if (!response.ok) throw new Error('Failed to send invite');
+        return response.json();
+      })
+      .then(() => {
+        setInviteStatus('Invite sent successfully!'); // Show success message
+        setEmail(''); // Clear email input field
+      })
+      .catch(err => {
+        setInviteStatus(`Error: ${err.message}`); // Show error message
+      });
+  };
+
+  // Display error message if any
+  if (error) {
+    return <div className="error">Error: {error}</div>;
+  }
+
+  
+  const handleRespondInvite = (requestId, response) => {
+    fetch('http://localhost:5001/api/friends/respond-invite', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ request_id: requestId, response }),
+    })
+      .then(response => response.json())
+      .then(() => {
+        setFriends(friends.filter(friend => friend.request_id !== requestId));
+      })
+      .catch(err => alert(err.message));
+  };
+
   if (error) {
     return <div className="error">Error: {error}</div>;
   }
@@ -75,12 +136,26 @@ const FriendsList = () => {
         <Friend
           key={friend.id}
           name={friend.name}
-          onBlock={() => handleBlock(friend.id)}
-          onDelete={() => handleDelete(friend.id)}
+          status={friend.status}
+          requestId={friend.request_id}
+          onRespondInvite={handleRespondInvite}
         />
       ))}
+
+      <section className="send-invite-section">
+        <h3>Send Friend Invite</h3>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Enter friend's email"
+        />
+        <button onClick={handleSendInvite}>Send Invite</button>
+        {inviteStatus && <p>{inviteStatus}</p>}
+      </section>
     </div>
   );
 };
+
 
 export default FriendsList;
