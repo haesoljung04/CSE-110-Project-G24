@@ -9,6 +9,9 @@ module.exports = (db) => {
 
   router.post('/delete-friend', (req, res) => friendAllController.deleteFriend(req, res, db));
 
+  router.post('/send-invite', (req, res) => friendAllController.sendInvite(req, res, db));
+
+  router.post('/respond-invite', (req, res) => friendAllController.respondInvite(req, res, db));
 
   return router;
 };
