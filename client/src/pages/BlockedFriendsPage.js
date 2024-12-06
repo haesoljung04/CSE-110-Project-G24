@@ -1,17 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FaHome, FaUser, FaCog } from 'react-icons/fa';
 import './BlockedFriendsPage.css';
 
 const BlockedFriendsPage = () => {
+  // Mocked data for blocked friends
   const blockedFriends = [
-    { id: 1, name: 'Name' },
-    { id: 2, name: 'Name' },
-    { id: 3, name: 'Name' },
-    { id: 4, name: 'Name' },
+    { id: 1, name: 'Alice' },
+    { id: 2, name: 'Bob' },
+    { id: 3, name: 'Charlie' },
+    { id: 4, name: 'Diana' },
   ];
 
+  // Handle unblock action
   const handleUnblock = (id) => {
     console.log(`Unblock friend with id: ${id}`);
+    // Add logic to call the backend API to unblock the friend
   };
 
   return (

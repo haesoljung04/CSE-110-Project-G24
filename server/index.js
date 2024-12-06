@@ -23,12 +23,12 @@ app.use(express.json());
 
 // Set up MySQL connection
 const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
+  host: 'localhost', // Replace with process.env.DB_HOST
+  user: 'root',      // Replace with process.env.DB_USER
+  password: 'fine666666', // Replace with process.env.DB_PASSWORD
+  database: 'mydatabase',
 });
-
+console.log(process.env);
 // Test MySQL connection
 db.connect((err) => {
   if (err) {
@@ -70,6 +70,51 @@ app.post('/api/actions', (req, res) => {
   });
 });
 
+
+
+
+// API to fetch workouts for a user
+app.get('/api/workouts/:user_id', (req, res) => {
+  const { user_id } = req.params;
+  const sql = 'SELECT * FROM workouts WHERE user_id = ?';
+  db.query(sql, [user_id], (err, results) => {
+    if (err) return res.status(500).send(err);
+    res.json(results);
+  });
+});
+
+// API to add a workout
+app.post('/api/workouts', (req, res) => {
+  const { workoutName, sets, reps, weight, maxOutWeight, user_id } = req.body;
+  const sql = `INSERT INTO workouts (workoutName, sets, reps, weight, maxOutWeight, user_id) VALUES (?, ?, ?, ?, ?, ?)`;
+  db.query(sql, [workoutName, sets, reps, weight, maxOutWeight, user_id], (err, result) => {
+    if (err) return res.status(500).send(err);
+    res.status(201).send({ id: result.insertId, message: 'Workout added' });
+  });
+});
+
+// API to update a workout
+app.put('/api/workouts/:id', (req, res) => {
+  const { id } = req.params;
+  const { workoutName, sets, reps, weight, maxOutWeight, user_id } = req.body;
+  const sql = `UPDATE workouts SET workoutName = ?, sets = ?, reps = ?, weight = ?, maxOutWeight = ? WHERE id = ? AND user_id = ?`;
+  db.query(sql, [workoutName, sets, reps, weight, maxOutWeight, id, user_id], (err) => {
+    if (err) return res.status(500).send(err);
+    res.send({ message: 'Workout updated' });
+  });
+});
+
+// API to delete a workout
+app.delete('/api/workouts/:id/:user_id', (req, res) => {
+  const { id, user_id } = req.params;
+  const sql = `DELETE FROM workouts WHERE id = ? AND user_id = ?`;
+  db.query(sql, [id, user_id], (err) => {
+    if (err) return res.status(500).send(err);
+    res.send({ message: 'Workout deleted' });
+  });
+});
+
+// Start the server
 // Start the server and export the server instance
 const server = app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

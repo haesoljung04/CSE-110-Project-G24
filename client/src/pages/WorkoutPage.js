@@ -1,31 +1,78 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './WorkoutPage.css';
 
 const WorkoutPage = () => {
-
   const [workoutName, setWorkoutName] = useState('');
   const [sets, setSets] = useState('');
   const [reps, setReps] = useState('');
   const [weight, setWeight] = useState('');
   const [maxOutWeight, setMaxOutWeight] = useState('');
-  const [workouts, setWorkouts] = useState([]);
+  const [workouts, setWorkouts] = useState([]); // Initialize as an empty array
   const [isEditing, setIsEditing] = useState(false);
-  const [currentWorkoutIndex, setCurrentWorkoutIndex] = useState(null);
+  const [currentWorkoutId, setCurrentWorkoutId] = useState(null);
+
+  const user_id = localStorage.getItem('user_id'); // Replace with your login logic
+
+  // Fetch workouts for the logged-in user
+  useEffect(() => {
+    if (!user_id) {
+      console.error('No user_id found!');
+      return;
+    }
+
+    fetch(`http://localhost:5001/api/workouts/${user_id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setWorkouts(data);
+        } else {
+          console.error('Expected array but got:', data);
+          setWorkouts([]); // Ensure state remains an array
+        }
+      })
+      .catch((err) => {
+        console.error('Error fetching workouts:', err);
+        setWorkouts([]); // Handle errors by resetting state to an empty array
+      });
+  }, [user_id]);
 
   const handleAddOrUpdateWorkout = (e) => {
     e.preventDefault();
     if (workoutName && sets && reps && weight && maxOutWeight) {
+      const workoutData = { workoutName, sets, reps, weight, maxOutWeight, user_id };
+
       if (isEditing) {
-        const updatedWorkouts = workouts.map((workout, index) =>
-          index === currentWorkoutIndex ? { workoutName, sets, reps, weight, maxOutWeight } : workout
-        );
-        setWorkouts(updatedWorkouts);
-        setIsEditing(false);
-        setCurrentWorkoutIndex(null);
+        // Update existing workout
+        fetch(`http://localhost:5001/api/workouts/${currentWorkoutId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(workoutData),
+        })
+          .then(() => {
+            setWorkouts((prev) =>
+              prev.map((workout) =>
+                workout.id === currentWorkoutId ? { id: currentWorkoutId, ...workoutData } : workout
+              )
+            );
+            setIsEditing(false);
+            setCurrentWorkoutId(null);
+          })
+          .catch((err) => console.error('Error updating workout:', err));
       } else {
-        const newWorkout = { workoutName, sets, reps, weight, maxOutWeight };
-        setWorkouts([...workouts, newWorkout]);
+        // Add new workout
+        fetch('http://localhost:5001/api/workouts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(workoutData),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            setWorkouts([...workouts, { id: data.id, ...workoutData }]);
+          })
+          .catch((err) => console.error('Error adding workout:', err));
       }
+
+      // Reset form
       setWorkoutName('');
       setSets('');
       setReps('');
@@ -34,20 +81,27 @@ const WorkoutPage = () => {
     }
   };
 
-  const handleEditWorkout = (index) => {
-    const workout = workouts[index];
-    setWorkoutName(workout.workoutName);
-    setSets(workout.sets);
-    setReps(workout.reps);
-    setWeight(workout.weight);
-    setMaxOutWeight(workout.maxOutWeight);
-    setIsEditing(true);
-    setCurrentWorkoutIndex(index);
+  const handleEditWorkout = (id) => {
+    const workout = workouts.find((w) => w.id === id);
+    if (workout) {
+      setWorkoutName(workout.workoutName);
+      setSets(workout.sets);
+      setReps(workout.reps);
+      setWeight(workout.weight);
+      setMaxOutWeight(workout.maxOutWeight);
+      setIsEditing(true);
+      setCurrentWorkoutId(id);
+    }
   };
 
-  const handleDeleteWorkout = (index) => {
-    const updatedWorkouts = workouts.filter((_, i) => i !== index);
-    setWorkouts(updatedWorkouts);
+  const handleDeleteWorkout = (id) => {
+    fetch(`http://localhost:5001/api/workouts/${id}/${user_id}`, {
+      method: 'DELETE',
+    })
+      .then(() => {
+        setWorkouts((prev) => prev.filter((workout) => workout.id !== id));
+      })
+      .catch((err) => console.error('Error deleting workout:', err));
   };
 
   return (
@@ -112,22 +166,22 @@ const WorkoutPage = () => {
 
       <div className="workout-list">
         <h2>Your Workouts</h2>
-        {workouts.length === 0 ? (
-          <p>No workouts added yet. Start adding your workouts!</p>
-        ) : (
+        {Array.isArray(workouts) && workouts.length > 0 ? (
           <ul>
-            {workouts.map((workout, index) => (
-              <li key={index}>
+            {workouts.map((workout) => (
+              <li key={workout.id}>
                 <span className="workout-name">{workout.workoutName}</span> -
                 <span className="workout-sets"> {workout.sets} sets</span>,
                 <span className="workout-reps"> {workout.reps} reps</span>,
                 <span className="workout-weight"> {workout.weight} kg</span>,
                 <span className="workout-maxout"> Max Out: {workout.maxOutWeight} kg</span>
-                <button className="edit-workout-button" onClick={() => handleEditWorkout(index)}>Edit</button>
-                <button className="delete-workout-button" onClick={() => handleDeleteWorkout(index)}>Delete</button>
+                <button onClick={() => handleEditWorkout(workout.id)}>Edit</button>
+                <button onClick={() => handleDeleteWorkout(workout.id)}>Delete</button>
               </li>
             ))}
           </ul>
+        ) : (
+          <p>No workouts added yet. Start adding your workouts!</p>
         )}
       </div>
     </div>
