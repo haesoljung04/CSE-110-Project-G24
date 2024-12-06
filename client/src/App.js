@@ -77,8 +77,7 @@ function App() {
   // );
 
   // Testing purpose for workout routine display frontend
-  const loggedInUserId = user?.sub; 
-  console.log('user ID:', loggedInUserId); 
+
   return (
     <div>
       {/* Conditionally render based on authentication */}
