@@ -6,6 +6,7 @@ const dotenv = require('dotenv');
 const workoutRoutineDisplayRoute = require("./routes/workoutRoutineDisplayRoute");
 const friendAllRoute = require('./routes/friendAllRoute');
 const friendBlockedRoute = require('./routes/friendBlockedRoute');
+const workoutRoute = require("./routes/workoutRoute");
 
 // Initialize dotenv to access environment variables
 dotenv.config();
@@ -48,6 +49,10 @@ app.use('/api/friends/blocked', friendBlockedRoute(db));
 
 // workout routine display route
 app.use("/api/workout", workoutRoutineDisplayRoute(db));
+
+// workout choose and save route
+app.use("/api/workouts", workoutRoute(db));
+
 // Example route
 app.get('/api', (req, res) => {
   res.json({ message: 'Hello from the backend!' });

@@ -6,6 +6,9 @@ import { Settings } from './pages/Settings';
 import { ThemeContext } from './context/ThemeContext';  // Import context
 import WorkoutRoutineDisplay from './pages/workoutRoutineDisplay';
 import ProfilePage from './pages/ProfilePage';
+import WorkoutPage from './pages/WorkoutPage';
+import WorkoutListPage  from './pages/WorkoutListPage';
+import BlockedFriendsPage from './pages/BlockedFriendsPage';
 
 
 function App() {
@@ -85,6 +88,10 @@ function App() {
           <FriendsList/>
           <WorkoutRoutineDisplay /> {/* Add the Workout Routine Display here */}
           <Settings/>
+          <BlockedFriendsPage/>
+          <WorkoutListPage/>
+          <WorkoutPage/>
+
         </>
       
       )}
