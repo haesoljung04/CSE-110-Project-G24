@@ -1,6 +1,8 @@
 import React, {useEffect, useContext } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { SignInPage } from './pages/SignInPage';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import FriendsList from './pages/FriendsList'; 
 import { Settings } from './pages/Settings';
 import { ThemeContext } from './context/ThemeContext';  // Import context
@@ -84,14 +86,26 @@ function App() {
         <>
           <button onClick={() => logout({ returnTo: window.location.origin })}>Log Out</button>
           <h2>Welcome, {user.name}</h2>
-          <ProfilePage/>
-          <FriendsList/>
-          <WorkoutRoutineDisplay /> {/* Add the Workout Routine Display here */}
-          <Settings/>
-          <BlockedFriendsPage/>
-          <WorkoutListPage/>
-          <WorkoutPage/>
 
+
+          <Router>
+      <nav>
+        <Link to="/"> Home </Link>
+        <Link to="friends"> friends </Link>
+        <Link to="WorkoutListPage"> WorkoutListPage </Link>
+        <Link to="WorkoutPage"> CreateWorkout </Link>
+      </nav>
+      <Routes>
+        <Route path="/" element={<ProfilePage />} />
+        <Route path="friends" element={<FriendsList />} />
+        <Route path="WorkoutRoutineDisplay" element={<WorkoutRoutineDisplay />} />
+        <Route path="Settings" element={<Settings />} />
+        <Route path="WorkoutListPage" element={<WorkoutListPage />} />
+        <Route path="WorkoutPage" element={<WorkoutPage />} />
+        <Route path="Settings" element={<Settings />}>
+        </Route>
+      </Routes>
+    </Router>
         </>
       
       )}
